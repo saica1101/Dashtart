@@ -1,6 +1,6 @@
+.gitignore
 node_modules
 .serena
 .next
-out
 public_
 styles
