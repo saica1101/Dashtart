@@ -1,0 +1,168 @@
+@import 'tailwindcss';
+
+/* カスタムテーマ */
+:root {
+  /* フォント */
+  --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  
+  /* ライトテーマ */
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.15 0.01 270);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.01 270);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.01 270);
+  --primary: oklch(0.51 0.22 263);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.01 270);
+  --secondary-foreground: oklch(0.15 0.01 270);
+  --muted: oklch(0.96 0.005 270);
+  --muted-foreground: oklch(0.52 0.01 270);
+  --accent: oklch(0.96 0.01 270);
+  --accent-foreground: oklch(0.15 0.01 270);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.91 0.005 270);
+  --input: oklch(0.91 0.005 270);
+  --ring: oklch(0.51 0.22 263);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.98 0 0);
+  --sidebar-foreground: oklch(0.15 0.01 270);
+  --sidebar-primary: oklch(0.51 0.22 263);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.96 0.01 270);
+  --sidebar-accent-foreground: oklch(0.15 0.01 270);
+  --sidebar-border: oklch(0.91 0.005 270);
+  --sidebar-ring: oklch(0.51 0.22 263);
+}
+
+/* ダークテーマ */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #f0f0f0;
+  --card: rgba(20, 20, 20, 0.8);
+  --card-foreground: #f0f0f0;
+  --popover: rgba(20, 20, 20, 0.95);
+  --popover-foreground: #f0f0f0;
+  --primary: #006fff;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f0f0f0;
+  --muted: rgba(26, 26, 26, 0.6);
+  --muted-foreground: #a0a0a0;
+  --accent: #69b4ff;
+  --accent-foreground: #0a0a0a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(26, 26, 26, 0.8);
+  --ring: #006fff;
+  --sidebar: rgba(15, 15, 15, 0.9);
+  --sidebar-foreground: #f0f0f0;
+  --sidebar-primary: #006fff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(26, 26, 26, 0.8);
+  --sidebar-accent-foreground: #f0f0f0;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #006fff;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* グラスモーフィズム効果の追加 */
+.glass-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* カスタムスクロールバーでプロフェッショナルな見た目 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #006fff, #69b4ff);
+  border-radius: 5px;
+  border: 2px solid var(--background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #0052cc, #4d9fff);
+}
+
+/* スムーズなアニメーションとホバーエフェクト */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 111, 255, 0.2);
+}
+
+/* フォーカスリング */
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* グラデーション背景アクセント */
+.gradient-border {
+  position: relative;
+  border-radius: var(--radius);
+  padding: 1px;
+  background: linear-gradient(135deg, #006fff, #69b4ff);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(var(--radius) - 1px);
+  background: var(--card);
+}
+
+/* ボタンホバーエフェクト */
+button:not(:disabled):hover {
+  transition: all 0.2s ease;
+}
+
+/* タブのアクティブ状態の強調 */
+.tab-active {
+  position: relative;
+}
+
+.tab-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #006fff, #69b4ff);
+  border-radius: 2px 2px 0 0;
+}
+
+[data-slot="card"] {
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
