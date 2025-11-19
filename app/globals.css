@@ -80,15 +80,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* グラスモーフィズム効果の追加 */
-.glass-card {
-  background: rgba(20, 20, 20, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
 
-/* カスタムスクロールバーでプロフェッショナルな見た目 */
+/* カスタムスクロールバー */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -109,7 +102,7 @@ body {
   background: linear-gradient(180deg, #0052cc, #4d9fff);
 }
 
-/* スムーズなアニメーションとホバーエフェクト */
+/* アニメーションエフェクト */
 .card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -163,6 +156,20 @@ button:not(:disabled):hover {
 }
 
 [data-slot="card"] {
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background-color: rgba(255,255,255,0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 4px 4px 5px rgba(0,0,0,0.1), inset 0 4px 5px rgba(255,255,255,0.15);
+}
+
+aside {
+  background-color: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+}
+
+div.absolute.inset-0:hover,
+button.inline-flex:hover {
+  transform: scale(1.1);
 }
