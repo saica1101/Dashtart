@@ -4,7 +4,9 @@ import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Pin, Edit2, Trash2, Plus, X } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { Pin, Edit2, Trash2, Plus, X, EyeOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Note } from '@/hooks/useDashboard'
@@ -13,11 +15,13 @@ interface NoteWidgetProps {
   theme: 'light' | 'dark'
   searchQuery: string
   notes: Note[]
+  isStreaming: boolean
   actions: {
-    addNote: (title: string, content: string) => void
+    addNote: (title: string, content: string, hideOnStream: boolean) => void
     removeNote: (id: string) => void
-    updateNote: (id: string, title: string, content: string) => void
+    updateNote: (id: string, title: string, content: string, hideOnStream: boolean) => void
     togglePinNote: (id: string) => void
+    toggleNoteHide: (id: string) => void
     updateNotes: (notes: Note[]) => void
   }
 }
@@ -26,11 +30,13 @@ export function NoteWidget({
   theme, 
   searchQuery, 
   notes, 
+  isStreaming,
   actions 
 }: NoteWidgetProps) {
   const [showNoteForm, setShowNoteForm] = useState(false)
   const [newNoteTitle, setNewNoteTitle] = useState('')
   const [newNoteContent, setNewNoteContent] = useState('')
+  const [newNoteHideOnStream, setNewNoteHideOnStream] = useState(false)
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
   const [draggedNoteId, setDraggedNoteId] = useState<string | null>(null)
 
@@ -45,9 +51,10 @@ export function NoteWidget({
 
   const handleAddNote = () => {
     if (newNoteTitle || newNoteContent) {
-      actions.addNote(newNoteTitle, newNoteContent)
+      actions.addNote(newNoteTitle, newNoteContent, newNoteHideOnStream)
       setNewNoteTitle('')
       setNewNoteContent('')
+      setNewNoteHideOnStream(false)
       setShowNoteForm(false)
     }
   }
@@ -56,14 +63,16 @@ export function NoteWidget({
     setEditingNoteId(note.id)
     setNewNoteTitle(note.title)
     setNewNoteContent(note.content)
+    setNewNoteHideOnStream(note.hideOnStream || false)
     setShowNoteForm(true)
   }
 
   const handleUpdateNote = () => {
     if (editingNoteId && (newNoteTitle || newNoteContent)) {
-      actions.updateNote(editingNoteId, newNoteTitle, newNoteContent)
+      actions.updateNote(editingNoteId, newNoteTitle, newNoteContent, newNoteHideOnStream)
       setNewNoteTitle('')
       setNewNoteContent('')
+      setNewNoteHideOnStream(false)
       setShowNoteForm(false)
       setEditingNoteId(null)
     }
@@ -72,6 +81,7 @@ export function NoteWidget({
   const cancelNoteEdit = () => {
     setNewNoteTitle('')
     setNewNoteContent('')
+    setNewNoteHideOnStream(false)
     setShowNoteForm(false)
     setEditingNoteId(null)
   }
@@ -104,12 +114,16 @@ export function NoteWidget({
     setDraggedNoteId(null)
   }
 
-  const filteredNotes = searchQuery
-    ? notes.filter(note => 
+  const filteredNotes = notes.filter(note => {
+    if (isStreaming && note.hideOnStream) return false
+    if (searchQuery) {
+      return (
         note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         note.content.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : notes
+    }
+    return true
+  })
 
   const filteredPinnedNotes = filteredNotes.filter(note => note.pinned)
   const filteredUnpinnedNotes = filteredNotes.filter(note => !note.pinned)
@@ -162,11 +176,32 @@ export function NoteWidget({
               onChange={(e) => setNewNoteContent(e.target.value)}
               className="w-full min-h-[150px] p-3 rounded-md border border-border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
             />
+            
+            <div className="flex items-center space-x-2 py-2">
+              <Checkbox 
+                id="note-hide-stream" 
+                checked={newNoteHideOnStream}
+                onCheckedChange={(checked) => setNewNoteHideOnStream(checked as boolean)}
+              />
+              <Label htmlFor="note-hide-stream" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-2">
+                <EyeOff className="h-4 w-4" />
+                配信モード中は非表示にする
+              </Label>
+            </div>
+
             <div className="flex gap-2">
-              <Button onClick={editingNoteId ? handleUpdateNote : handleAddNote} className="flex-1">
+              <Button 
+                onClick={editingNoteId ? handleUpdateNote : handleAddNote} 
+                className="flex-1"
+                id="note_add"
+              >
                 {editingNoteId ? '更新' : '追加'}
               </Button>
-              <Button onClick={cancelNoteEdit} variant="outline" className="flex-1">
+              <Button 
+                onClick={cancelNoteEdit} 
+                className="flex-1"
+                id="note_cancel"
+              >
                 キャンセル
               </Button>
             </div>
@@ -213,7 +248,8 @@ export function NoteWidget({
                         <Card 
                           className={cn(
                             "p-4 group relative hover:shadow-lg transition-all min-h-[200px] flex flex-col cursor-move",
-                            draggedNoteId === note.id && "opacity-50 scale-95 ring-2 ring-primary"
+                            draggedNoteId === note.id && "opacity-50 scale-95 ring-2 ring-primary",
+                            note.hideOnStream && !isStreaming && "ring-1 ring-dashed ring-muted-foreground/50"
                           )}
                           style={{ backgroundColor: cardBgColor }}
                           draggable
@@ -231,6 +267,13 @@ export function NoteWidget({
                               {note.content}
                             </p>
                           </div>
+                          
+                          {note.hideOnStream && (
+                            <div className="absolute bottom-2 right-2 opacity-50" title="配信モード中は非表示">
+                              <EyeOff className="h-4 w-4" style={{ color: textColor }} />
+                            </div>
+                          )}
+
                           <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button
                               variant="ghost"
@@ -241,6 +284,16 @@ export function NoteWidget({
                               title={note.pinned ? "ピン留めを解除" : "ピン留めする"}
                             >
                               <Pin className={cn("h-3 w-3", note.pinned && "fill-current")} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn("h-6 w-6", note.hideOnStream && "opacity-100")}
+                              style={{ color: textColor }}
+                              onClick={() => actions.toggleNoteHide(note.id)}
+                              title={note.hideOnStream ? "配信時に表示する" : "配信時に隠す"}
+                            >
+                              <EyeOff className={cn("h-3 w-3", note.hideOnStream && "text-red-500")} />
                             </Button>
                             <Button
                               variant="ghost"
@@ -295,7 +348,8 @@ export function NoteWidget({
                         <Card 
                           className={cn(
                             "p-4 group relative hover:shadow-lg transition-all min-h-[200px] flex flex-col cursor-move",
-                            draggedNoteId === note.id && "opacity-50 scale-95 ring-2 ring-primary"
+                            draggedNoteId === note.id && "opacity-50 scale-95 ring-2 ring-primary",
+                            note.hideOnStream && !isStreaming && "ring-1 ring-dashed ring-muted-foreground/50"
                           )}
                           style={{ backgroundColor: cardBgColor }}
                           draggable
@@ -313,6 +367,13 @@ export function NoteWidget({
                               {note.content}
                             </p>
                           </div>
+
+                          {note.hideOnStream && (
+                            <div className="absolute bottom-2 right-2 opacity-50" title="配信モード中は非表示">
+                              <EyeOff className="h-4 w-4" style={{ color: textColor }} />
+                            </div>
+                          )}
+
                           <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button
                               variant="ghost"
@@ -323,6 +384,16 @@ export function NoteWidget({
                               title={note.pinned ? "ピン留めを解除" : "ピン留めする"}
                             >
                               <Pin className={cn("h-3 w-3", note.pinned && "fill-current")} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn("h-6 w-6", note.hideOnStream && "opacity-100")}
+                              style={{ color: textColor }}
+                              onClick={() => actions.toggleNoteHide(note.id)}
+                              title={note.hideOnStream ? "配信時に表示する" : "配信時に隠す"}
+                            >
+                              <EyeOff className={cn("h-3 w-3", note.hideOnStream && "text-red-500")} />
                             </Button>
                             <Button
                               variant="ghost"

@@ -79,10 +79,10 @@ export function MailWidget({ mailServices, actions }: MailWidgetProps) {
                 className="flex-1"
               />
             </div>
-            <Button onClick={handleAddMailService} className="sm:w-auto">
-              <Plus className="h-4 w-4 mr-2" />
-              追加
-            </Button>
+              <Button onClick={handleAddMailService} id="add_mail_service">
+                <Plus className="h-4 w-4 mr-2" />
+                追加
+              </Button>
           </div>
         </Card>
       )}

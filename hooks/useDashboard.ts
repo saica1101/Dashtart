@@ -33,6 +33,7 @@ export type Note = {
   content: string
   color: string
   pinned: boolean
+  hideOnStream: boolean
 }
 
 export function useDashboard() {
@@ -213,19 +214,22 @@ export function useDashboard() {
   const removeMailService = (id: string) => setMailServices(mailServices.filter(m => m.id !== id))
 
   // Note Actions
-  const addNote = (title: string, content: string) => {
+  const addNote = (title: string, content: string, hideOnStream: boolean) => {
     const colors = ['#fef3c7', '#dbeafe', '#fce7f3', '#e0e7ff', '#dcfce7']
     const randomColor = colors[Math.floor(Math.random() * colors.length)]
     setNotes([...notes, {
-      id: Date.now().toString(), title, content, color: randomColor, pinned: false
+      id: Date.now().toString(), title, content, color: randomColor, pinned: false, hideOnStream
     }])
   }
   const removeNote = (id: string) => setNotes(notes.filter(n => n.id !== id))
-  const updateNote = (id: string, title: string, content: string) => {
-    setNotes(notes.map(n => n.id === id ? { ...n, title, content } : n))
+  const updateNote = (id: string, title: string, content: string, hideOnStream: boolean) => {
+    setNotes(notes.map(n => n.id === id ? { ...n, title, content, hideOnStream } : n))
   }
   const togglePinNote = (id: string) => {
     setNotes(notes.map(n => n.id === id ? { ...n, pinned: !n.pinned } : n))
+  }
+  const toggleNoteHide = (id: string) => {
+    setNotes(notes.map(n => n.id === id ? { ...n, hideOnStream: !n.hideOnStream } : n))
   }
   const updateNotes = (newNotes: Note[]) => setNotes(newNotes)
 
@@ -244,7 +248,7 @@ export function useDashboard() {
       addCategory, removeCategory, updateCategory, updateCategories,
       addReminder, toggleReminder, removeReminder, toggleReminderHide, updateReminders,
       addMailService, removeMailService,
-      addNote, removeNote, updateNote, togglePinNote, updateNotes
+      addNote, removeNote, updateNote, togglePinNote, toggleNoteHide, updateNotes
     }
   }
 }

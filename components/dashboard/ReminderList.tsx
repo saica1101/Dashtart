@@ -127,7 +127,7 @@ export function ReminderList({
               />
               <span className="text-sm">配信中は非表示にする</span>
             </label>
-            <Button onClick={handleAddReminder}>
+            <Button onClick={handleAddReminder} id="add_reminder">
               <Plus className="h-4 w-4 mr-2" />
               追加
             </Button>

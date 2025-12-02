@@ -80,28 +80,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-
-/* カスタムスクロールバー */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--background);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #006fff, #69b4ff);
-  border-radius: 5px;
-  border: 2px solid var(--background);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #0052cc, #4d9fff);
-}
-
 /* アニメーションエフェクト */
 .card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -163,7 +141,7 @@ button:not(:disabled):hover {
 }
 
 aside {
-  background-color: rgba(255,255,255,0.03);
+  background-color: rgba(255,255,255,0);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   
@@ -171,5 +149,65 @@ aside {
 
 div.absolute.inset-0:hover,
 button.inline-flex:hover {
+  cursor: pointer;
   transform: scale(1.1);
+}
+
+#title_text {
+  user-select: none;
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 0 10px 0 10px;
+  transition: text-shadow 0.3s ease;
+}
+
+#title_text:hover {
+  cursor: default;
+  text-shadow: 0 2px 20px rgba(0, 111, 255, 0.5),
+               0 -2px 20px rgba(105,180,255, 0.5);
+}
+
+#note_add,
+#note_cancel {
+  border: none;
+  background-color: transparent;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 4px 4px 5px rgba(0,0,0,0.1), inset 0 4px 5px rgba(255,255,255,0.15);
+}
+
+#note_add:hover{
+  transform: scale(1.02);
+  user-select: none;
+  cursor: pointer;
+  background-color: rgba(0, 111, 255, 0.3);
+}
+
+#note_cancel:hover {
+  transform: scale(1.02);
+  user-select: none;
+  cursor: pointer;
+  background-color: rgba(255, 0, 0, 0.3);
+  }
+
+#stream-toggle,
+#add_quick_page,
+#add_reminder,
+#add_mail_service {
+  box-shadow: 4px 4px 5px rgba(0,0,0,0.1), inset 0 4px 5px rgba(255,255,255,0.15);
+
+}
+#add_quick_page:hover,
+#add_reminder:hover,
+#add_mail_service:hover {
+  transform: scale(1.02);
+  user-select: none;
+  cursor: pointer;
+  background-color: rgba(0, 111, 255, 0.2);
+}
+
+#quick_page_category_select {
+  background-color: var(--popover);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }

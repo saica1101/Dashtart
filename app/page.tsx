@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { Moon, Sun, Menu, X, Search, LayoutDashboard, Link, Bell, Mail, StickyNote } from 'lucide-react'
+import { Moon, Sun, Menu, X, Search, LayoutDashboard, Link, Bell, Mail, StickyNote, LayoutGrid } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -117,10 +117,10 @@ export default function Home() {
             className="fixed left-0 top-0 h-full w-64 bg-card/80 backdrop-blur-xl border-r border-border z-40 flex flex-col shadow-2xl"
           >
             <div className="p-6 flex items-center justify-between">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <h1 id="title_text">
                 Dashtart
               </h1>
-              <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="lg:hidden">
+              <Button size="icon" onClick={() => setSidebarOpen(false)} className="lg:hidden">
                 <X className="h-5 w-5" />
               </Button>
             </div>
@@ -156,6 +156,8 @@ export default function Home() {
               })}
             </nav>
 
+            <WeatherWidget isStreaming={isStreaming} />
+
             <div className="p-4 border-t border-border space-y-4 bg-card/50">
               <div className="flex items-center justify-between px-2">
                 <Button
@@ -165,6 +167,7 @@ export default function Home() {
                     isStreaming && "animate-pulse bg-red-500 hover:bg-red-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)]"
                   )}
                   onClick={() => setIsStreaming(!isStreaming)}
+                  id="stream-toggle"
                 >
                   <div className={cn(
                     "w-2 h-2 rounded-full bg-current",
@@ -262,7 +265,7 @@ export default function Home() {
 
         {/* Content Area */}
         <div className="p-8 max-w-7xl mx-auto space-y-8 pb-32 lg:pr-64">
-          <WeatherWidget isStreaming={isStreaming} />
+
 
           <AnimatePresence mode="wait">
             {activeView === 'dashboard' && (
@@ -308,6 +311,7 @@ export default function Home() {
                     searchQuery={searchQuery}
                     notes={notes}
                     actions={actions}
+                    isStreaming={isStreaming}
                   />
                 </section>
               </motion.div>
@@ -377,6 +381,7 @@ export default function Home() {
                   searchQuery={searchQuery}
                   notes={notes}
                   actions={actions}
+                  isStreaming={isStreaming}
                 />
               </motion.div>
             )}

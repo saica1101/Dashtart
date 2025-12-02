@@ -1,10 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Plus, Trash2, Radio, Edit2, Check, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -174,6 +181,9 @@ export function QuickLinks({
     ? quickPagesInActiveCategory.filter(page => page.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : quickPagesInActiveCategory
 
+  const [hovered, setHovered] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-balance">Quick Pages</h2>
@@ -225,15 +235,45 @@ export function QuickLinks({
                 className="flex-1"
               />
             </div>
-            <select
-              value={newPageCategoryId}
-              onChange={(e) => setNewPageCategoryId(e.target.value)}
-              className="w-full px-3 py-2 rounded-md border border-border bg-background"
-            >
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
+            <Select value={newPageCategoryId} onValueChange={setNewPageCategoryId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="カテゴリを選択" />
+              </SelectTrigger>
+              <SelectContent
+                id="quick_page_category_select"
+                ref={containerRef}
+                className="
+                  relative
+                  z-50
+                  [&_[data-radix-select-viewport]]:shadow-none
+                  [&_[data-radix-select-viewport]]:bg-transparent
+                ">
+                {hovered !== null && (
+                  <motion.div
+                    className="absolute left-0 right-0 z-50 border !border-blue-500 rounded-md pointer-events-none"
+                    layout
+                    transition={{ type: "spring",
+                                  stiffness: 250,
+                                  damping: 30
+                    }}
+                    style={{
+                      top: hovered * 33,
+                      height: 33,
+                    }}
+                  />
+                )}
+                {categories.map((cat, i) => (
+                  <SelectItem
+                    key={cat.id}
+                    value={cat.id}
+                    className="relative z-10"
+                    onMouseEnter={() => setHovered(i)}
+                    onMouseLeave={() => setHovered(null)}
+                  >
+                  {cat.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -243,7 +283,7 @@ export function QuickLinks({
               />
               <span className="text-sm">配信中は非表示にする</span>
             </label>
-            <Button onClick={handleAddQuickPage} className="sm:w-auto">
+            <Button onClick={handleAddQuickPage} className="sm:w-auto" id="add_quick_page">
               <Plus className="h-4 w-4 mr-2" />
               追加
             </Button>

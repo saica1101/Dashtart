@@ -72,8 +72,8 @@ export function WeatherWidget({ isStreaming }: WeatherWidgetProps) {
   if (isStreaming) return null
 
   return (
-    <div className="fixed right-6 top-20 z-30">
-      <Card className="p-4 w-48 bg-card/95 backdrop-blur relative group">
+    <div className="w-full px-4 mb-4">
+      <Card className="p-4 w-full bg-card/50 backdrop-blur relative group border-border/50">
         {isLoadingWeather ? (
           <div className="flex items-center justify-center h-20">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -115,7 +115,7 @@ export function WeatherWidget({ isStreaming }: WeatherWidgetProps) {
 
         {/* 設定パネル */}
         {showWeatherSettings && (
-          <div className="absolute top-full right-0 mt-2 w-64 bg-card border border-border rounded-lg shadow-lg p-4 z-50">
+          <div className="absolute bottom-full left-0 mb-2 w-64 bg-card border border-border rounded-lg shadow-lg p-4 z-50">
             <h3 className="text-sm font-semibold mb-3">地域設定</h3>
             <div className="flex flex-col gap-3">
               <Input
